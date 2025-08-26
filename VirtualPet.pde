@@ -20,17 +20,6 @@ void draw() {
     line(0, i, width, i);
   }
   
-  // Title
-  fill(61, 209, 137);
-  textSize(36);
-  textAlign(CENTER, CENTER);
-  text("Click for cool suprise!", width / 2, height * 0.7);
-  
-  fill(15, 255, 139);
-  textSize(37);
-  textAlign(CENTER, CENTER);
-  text("Click for cool suprise!", width / 2, height * 0.7);
-  
   // Update dragon
   dragonY = height/2 + sin(frameCount * 0.02) * 30;
   wingAngle = sin(frameCount * 0.15) * 0.8;
