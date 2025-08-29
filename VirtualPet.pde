@@ -1,17 +1,38 @@
+import processing.serial.*;
+import cc.arduino.*;
+Arduino arduino;
+
 float wingAngle = 0;
+
 float dragonY;
 float fireTimer = 0;
 
 boolean breathingFire = false;
 ArrayList<Particle> fireParticles;
 
+int lightLevels = 0;
+boolean canJump = true;
+int lastCheckedLevel = 0;
+
+int jumpHeight = 0;
+float gravity = 0.2f;
+
 void setup() {
   size(600, 800);
   dragonY = height / 2;
   fireParticles = new ArrayList<Particle>();
+  
+  arduino = new Arduino(this, Arduino.list()[2], 57600);
+}
+
+void arduinoUpdate() {
+  lightLevels = (int)lerp(lightLevels, arduino.analogRead(5), 1);
+  System.out.println(lightLevels);
 }
 
 void draw() {
+  arduinoUpdate();
+  
   // The Sky
   for (int i = 0; i <= height; i++) {
     float interpolation = map(i, 0, height, 0, 1);
@@ -21,7 +42,20 @@ void draw() {
   }
   
   // Update dragon
-  dragonY = height/2 + sin(frameCount * 0.02) * 30;
+  float dragonFrameHeight = height/2 + sin(frameCount * 0.02) * 30;
+  
+  if ((lightLevels > (lastCheckedLevel + 5) || lightLevels < (lastCheckedLevel - 5)) && canJump) {
+    canJump = false;
+    jumpHeight += 50;
+  } else {
+    canJump = true;
+  }
+  
+  jumpHeight = (int)(jumpHeight * gravity);
+  lastCheckedLevel = lightLevels;
+  
+  dragonY = lerp(dragonFrameHeight, dragonFrameHeight + jumpHeight, 1);
+  
   wingAngle = sin(frameCount * 0.15) * 0.8;
   
   // Fire
@@ -134,6 +168,7 @@ void drawDragon(float x, float y) {
   for (int i = 0; i < 4; i++) {
     float legX = -30 + i * 30;
     
+    // this is prob no the best way to do this
     if (i == 3) {
       continue;
     } else if (i == 1) {
@@ -172,49 +207,4 @@ void drawWing(float x, float y, float angle) {
   line(0, 0, -20, 25);
   
   popMatrix();
-}
-
-public class Particle {
-  float x, y;
-  float vx, vy;
-  float life;
-  color c;
-  
-  Particle(float startX, float startY) {
-    x = startX;
-    y = startY;
-    vx = random(2, 5);
-    vy = random(-1, 1);
-    life = 255;
-    
-    // Fire colors
-    float r = random(0, 1);
-    if (r < 0.3) {
-      c = color(255, 69, 0);  // Orange
-    } else if (r < 0.6) {
-      c = color(255, 140, 0); // Dark orange
-    } else {
-      c = color(255, 215, 0); // Gold
-    }
-  }
-  
-  void update() {
-    x += vx;
-    y += vy;
-    vx *= 0.98;
-    vy += 0.1;
-    life -= 4;
-  }
-  
-  void display() {
-    fill(red(c), green(c), blue(c), life);
-    noStroke();
-    
-    float size = map(life, 0, 255, 2, 12);
-    ellipse(x, y, size, size);
-  }
-  
-  boolean isDead() {
-    return life <= 0;
-  }
 }
