@@ -1,6 +1,6 @@
-import processing.serial.*;
-import cc.arduino.*;
-Arduino arduino;
+// import processing.serial.*;
+// import cc.arduino.*;
+// Arduino arduino;
 
 float wingAngle = 0;
 
@@ -10,28 +10,28 @@ float fireTimer = 0;
 boolean breathingFire = false;
 ArrayList<Particle> fireParticles;
 
-int lightLevels = 0;
-boolean canJump = true;
-int lastCheckedLevel = 0;
+// int lightLevels = 0;
+// boolean canJump = true;
+// int lastCheckedLevel = 0;
 
-int jumpHeight = 0;
-float gravity = 0.2f;
+// int jumpHeight = 0;
+// float gravity = 0.2f;
 
 void setup() {
   size(600, 800);
   dragonY = height / 2;
   fireParticles = new ArrayList<Particle>();
   
-  arduino = new Arduino(this, Arduino.list()[2], 57600);
+  // arduino = new Arduino(this, Arduino.list()[2], 57600);
 }
 
-void arduinoUpdate() {
-  lightLevels = (int)lerp(lightLevels, arduino.analogRead(5), 1);
-  System.out.println(lightLevels);
-}
+// void arduinoUpdate() {
+  // lightLevels = (int)lerp(lightLevels, arduino.analogRead(5), 1);
+  // System.out.println(lightLevels);
+// }
 
 void draw() {
-  arduinoUpdate();
+  // arduinoUpdate();
   
   // The Sky
   for (int i = 0; i <= height; i++) {
@@ -44,17 +44,18 @@ void draw() {
   // Update dragon
   float dragonFrameHeight = height/2 + sin(frameCount * 0.02) * 30;
   
-  if ((lightLevels > (lastCheckedLevel + 5) || lightLevels < (lastCheckedLevel - 5)) && canJump) {
-    canJump = false;
-    jumpHeight += 50;
-  } else {
-    canJump = true;
-  }
+  // if ((lightLevels > (lastCheckedLevel + 5) || lightLevels < (lastCheckedLevel - 5)) && canJump) {
+    // canJump = false;
+    // jumpHeight += 50;
+  // } else {
+    // canJump = true;
+  // }
   
-  jumpHeight = (int)(jumpHeight * gravity);
-  lastCheckedLevel = lightLevels;
+  // jumpHeight = (int)(jumpHeight * gravity);
+  // lastCheckedLevel = lightLevels;
   
-  dragonY = lerp(dragonFrameHeight, dragonFrameHeight + jumpHeight, 1);
+  // dragonY = lerp(dragonFrameHeight, dragonFrameHeight + jumpHeight, 1);
+  dragonY = lerp(dragonFrameHeight, dragonFrameHeight, 1);
   
   wingAngle = sin(frameCount * 0.15) * 0.8;
   
