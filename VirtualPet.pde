@@ -209,3 +209,48 @@ void drawWing(float x, float y, float angle) {
   
   popMatrix();
 }
+
+public class Particle {
+  float x, y;
+  float vx, vy;
+  float life;
+  color c;
+  
+  Particle(float startX, float startY) {
+    x = startX;
+    y = startY;
+    vx = random(2, 5);
+    vy = random(-1, 1);
+    life = 255;
+    
+    // Fire colors
+    float r = random(0, 1);
+    if (r < 0.3) {
+      c = color(255, 69, 0);  // Orange
+    } else if (r < 0.6) {
+      c = color(255, 140, 0); // Dark orange
+    } else {
+      c = color(255, 215, 0); // Gold
+    }
+  }
+  
+  void update() {
+    x += vx;
+    y += vy;
+    vx *= 0.98;
+    vy += 0.1;
+    life -= 4;
+  }
+  
+  void display() {
+    fill(red(c), green(c), blue(c), life);
+    noStroke();
+    
+    float size = map(life, 0, 255, 2, 12);
+    ellipse(x, y, size, size);
+  }
+  
+  boolean isDead() {
+    return life <= 0;
+  }
+}
